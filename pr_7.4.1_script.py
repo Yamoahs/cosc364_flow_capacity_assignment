@@ -1,20 +1,39 @@
 import itertools
 
+START = 'ABCD'
+TRAN = 'XYZ'
+DEST = '1234'
+
 def demand_vol_dic_creater(demand_volume):
-    start = 'ABCD'
-    dest = '1234'
-    variables = itertools.product(start, dest)
+
+    variables = itertools.product(START, DEST)
     variables = list(map(''.join,list(variables)))
-    print(variables)
-    demands = {(var for var in variables): j for i in demand_volume for j in i}
+    demands = dict()
+    r = [j for i in demand_volume for j in i]
+    for key, value in zip(variables, r):
+        demands[key] = value
 
-
-    total_sources = len(demand_volume)
-    if total_sources:
-        total_destinations = len(demand_volume[0])
     return demands
 
+def run_cplex():
+    pass
 
+def format_output(demands):
+
+    for src in START:
+        for dst in DEST:
+            # eqn = ''
+            # for trn in TRAN:
+                # part = src + trn + dst
+                # print(part)
+            eqn = src + TRAN[0] + dst
+            for trn in TRAN[1:]:
+                part = src + trn + dst
+                eqn = eqn + ' + ' + part + ' = {}'.format(demands[str(src + dst)])
+                # eqn = part + '+' + eqn
+        # eqn += part#str(src + trn + dst + '=' )#+ demands[src+dst])
+
+            print(eqn)
 
 
 def main():
@@ -25,8 +44,10 @@ def main():
     [70,30,50,10]
     ]
 
-    d_vol = {'A1'}
-    print(demand_vol_dic_creater(demand_vol))
+
+    demand = demand_vol_dic_creater(demand_vol)
+    format_output(demand)
+    print(demand)
 
 
 if __name__ == '__main__':
