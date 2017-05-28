@@ -34,6 +34,9 @@ def demand_constraint(demands):
     demand_constraint_string = '\n'.join(demand_flows)
     return demand_constraint_string
 
+def links_constraint():
+    """Function Generates the equations for the link demand constraints"""
+    pass
 
 def main():
     demand_vol = [
