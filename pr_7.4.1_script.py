@@ -18,22 +18,21 @@ def demand_vol_dic_creater(demand_volume):
 def run_cplex():
     pass
 
-def format_output(demands):
 
+def demand_constraint(demands):
+
+    demand_flows = []
     for src in START:
         for dst in DEST:
-            # eqn = ''
-            # for trn in TRAN:
-                # part = src + trn + dst
-                # print(part)
-            eqn = src + TRAN[0] + dst
-            for trn in TRAN[1:]:
+            eqn = []
+            for trn in TRAN:
                 part = src + trn + dst
-                eqn = eqn + ' + ' + part + ' = {}'.format(demands[str(src + dst)])
-                # eqn = part + '+' + eqn
-        # eqn += part#str(src + trn + dst + '=' )#+ demands[src+dst])
+                eqn.append(part)
+            string = 'x{} + x{} + x{} = {}'.format(eqn[0], eqn[1], eqn[2], demands[str(src + dst)])
+            demand_flows.append(string)
 
-            print(eqn)
+    demand_constraint_string = '\n'.join(demand_flows)
+    return demand_constraint_string
 
 
 def main():
@@ -46,8 +45,8 @@ def main():
 
 
     demand = demand_vol_dic_creater(demand_vol)
-    format_output(demand)
-    print(demand)
+    print(demand_constraint(demand))
+    # print(demand)
 
 
 if __name__ == '__main__':
