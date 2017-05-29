@@ -37,7 +37,8 @@ def demand_constraint(demands):
 
 def source_trans_links():
     """Function Generates the equations for the link demand constraints between
-    source and destination"""
+    source and transit nodes.
+    The len of the equation will be the number of Destinations"""
     links = []
     for src in START:
         for trn in TRAN:
@@ -53,6 +54,25 @@ def source_trans_links():
     links_string = '\n'.join(links)
     return links_string
 
+def trans_dest_links():
+    """Function Generates the equations for the link demand constraints between
+    transit and destination nodes.
+    The len of the equation will be the number of Sources"""
+    links = []
+    for trn in TRAN:
+        for dst in DEST:
+            eqn = []
+            for src in START:
+                part = src + trn + dst
+                eqn.append(part)
+                variables.add('y{}'.format(src + trn))
+            string = 'x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
+                                                      eqn[2], eqn[3], trn + dst)
+            links.append(string)
+
+    links_string = '\n'.join(links)
+    return links_string
+
 
 def main():
     demand_vol = [
@@ -63,9 +83,11 @@ def main():
     ]
 
 
+
     demand = demand_vol_dic_creater(demand_vol)
     print(demand_constraint(demand))
     print(source_trans_links())
+    print(trans_dest_links())
     # print(sorted(variables))
 
 
