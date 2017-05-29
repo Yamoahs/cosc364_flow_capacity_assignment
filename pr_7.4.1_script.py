@@ -3,6 +3,7 @@ import itertools
 START = 'ABCD'
 TRAN = 'XYZ'
 DEST = '1234'
+variables = set()
 
 def demand_vol_dic_creater(demand_volume):
 
@@ -18,7 +19,6 @@ def demand_vol_dic_creater(demand_volume):
 def run_cplex():
     pass
 
-
 def demand_constraint(demands):
 
     demand_flows = []
@@ -28,15 +28,31 @@ def demand_constraint(demands):
             for trn in TRAN:
                 part = src + trn + dst
                 eqn.append(part)
+                variables.add(part)
             string = 'x{} + x{} + x{} = {}'.format(eqn[0], eqn[1], eqn[2], demands[str(src + dst)])
             demand_flows.append(string)
 
     demand_constraint_string = '\n'.join(demand_flows)
     return demand_constraint_string
 
-def links_constraint():
-    """Function Generates the equations for the link demand constraints"""
-    pass
+def source_trans_links():
+    """Function Generates the equations for the link demand constraints between
+    source and destination"""
+    links = []
+    for src in START:
+        for trn in TRAN:
+            eqn = []
+            for dst in DEST:
+                part = src + trn + dst
+                eqn.append(part)
+                variables.add('y{}'.format(src + trn))
+            string = 'x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
+                                                      eqn[2], eqn[3], src + trn)
+            links.append(string)
+
+    links_string = '\n'.join(links)
+    return links_string
+
 
 def main():
     demand_vol = [
@@ -49,7 +65,8 @@ def main():
 
     demand = demand_vol_dic_creater(demand_vol)
     print(demand_constraint(demand))
-    # print(demand)
+    print(source_trans_links())
+    # print(sorted(variables))
 
 
 if __name__ == '__main__':
