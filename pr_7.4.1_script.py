@@ -38,11 +38,20 @@ End""".format(demands, src_links, trn_links, restrictions)
 
 def run_cplex(filename):
     """"Script for building and running Cplex based on .lp file input"""
-
+    # Lab machines (comment out either these set or the other)
     command = "/home/cosc/student/sya57/internet_tech_cosc364/labs/cplex/cplex/bin/x86-64_linux/cplex"
     args = [
         "-c",
         "read /home/cosc/student/sya57/internet_tech_cosc364/assig_2/" + filename,
+        "optimize",
+        'display solution variables -'
+    ]
+
+    # Home machine
+    command = "/home/samuel/C_plex/cplex/bin/x86-64_linux/cplex"
+    args = [
+        "-c",
+        "read /home/samuel/cosc364/cosc364_flow_capacity_assignment/" + filename,
         "optimize",
         'display solution variables -'
     ]
