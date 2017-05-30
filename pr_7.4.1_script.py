@@ -17,8 +17,8 @@ def demand_vol_dic_creater(demand_volume):
 
     return demands
 
-def run_cplex():
-    pass
+def run_cplex(demands, src_links, trn_links, restrictions):
+    """"Script for building and running Cplex based on .lp file input"""
 
 def demand_constraint(demands):
 
@@ -114,10 +114,11 @@ def main():
 
 
     demand = demand_vol_dic_creater(demand_vol)
-    print(demand_constraint(demand))
-    print(source_trans_links())
-    print(trans_dest_links())
-    print(restrictions(LINK_CAPACITY))
+    part_1 = demand_constraint(demand)
+    part_2 = source_trans_links()
+    part_3 = trans_dest_links()
+    part_4 = restrictions(LINK_CAPACITY)
+    run_cplex(part_1, part_2, part_3, part_4)
     # print("demand variables:\n{}\nlink variables:\n{}".format(sorted(demand_variables),\
                                                                 # sorted(link_variables)))
     # print(sorted(variables))
