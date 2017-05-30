@@ -146,7 +146,7 @@ def restrictions(capacity):
         for var in all_variables:
             if trn in var:
                 xxx.append(var)
-            eqn = ' + '.join(xxx) + " - {}r <= 0".format(capacity)
+            eqn = '  ' + ' + '.join(xxx) + " - {}r <= 0".format(capacity)
         # print(eqn)
         utilazation_restrictions.append(eqn)
 
