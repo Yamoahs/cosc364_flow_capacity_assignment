@@ -127,8 +127,8 @@ def restrictions(capacity):
     for variable in sorted(link_variables):
         eqn = '  {} <= {}'.format(variable, capacity)
         restrictions.append(eqn)
-        eqn = '  {}/{} <= r'.format(variable, capacity)
-        utilazation_restrictions.append(eqn)
+        # eqn = '  {}/{} <= r'.format(variable, capacity)
+        # utilazation_restrictions.append(eqn)
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
 
@@ -136,6 +136,20 @@ def restrictions(capacity):
     for variable in sorted(demand_variables):
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
+
+    #r values
+    all_variables = sorted(link_variables.union(demand_variables))
+    # print(all_variables)
+    yyy = []
+    for trn in TRAN:
+        xxx = []
+        for var in all_variables:
+            if trn in var:
+                xxx.append(var)
+            eqn = ' + '.join(xxx) + " - {}r <= 0".format(capacity)
+        # print(eqn)
+        utilazation_restrictions.append(eqn)
+
 
 
     link_capacity_string = '\n'.join(restrictions)
@@ -164,7 +178,7 @@ def main():
     build_cplex(part_1, part_2, part_3, part_4)
     print(run_cplex(filename))
     # print("demand variables:\n{}\nlink variables:\n{}".format(sorted(demand_variables),\
-                                                                # sorted(link_variables)))
+    #                                                             sorted(link_variables)))
     # print(sorted(variables))
 
 
