@@ -1,3 +1,4 @@
+import subprocess
 import itertools
 
 START = 'ABCD'
@@ -5,6 +6,7 @@ TRAN = 'XYZ'
 DEST = '1234'
 demand_variables = set()
 link_variables = set()
+filename = 'pr_7.4.1.lp'
 
 def demand_vol_dic_creater(demand_volume):
 
@@ -19,7 +21,6 @@ def demand_vol_dic_creater(demand_volume):
 
 def build_cplex(demands, src_links, trn_links, restrictions):
     """"Function builds a Cplex .lp file based on string inputs"""
-    filename = 'pr_7.4.1.lp'
     lp_string = \
 """Minimize
 r
@@ -29,15 +30,29 @@ Subject to
 {}
 {}
   r >= 0
-""".format(demands, src_links, trn_links, restrictions)
+End""".format(demands, src_links, trn_links, restrictions)
     f = open(filename, 'w')
     f.write(lp_string)
     f.close()
-    
+
 
 def run_cplex(filename):
     """"Script for building and running Cplex based on .lp file input"""
-    pass
+
+    command = "/home/cosc/student/sya57/internet_tech_cosc364/labs/cplex/cplex/bin/x86-64_linux/cplex"
+    args = [
+        "-c",
+        "read /home/cosc/student/sya57/internet_tech_cosc364/assig_2/" + filename,
+        "optimize",
+        'display solution variables -'
+    ]
+
+    proc = subprocess.Popen([command] + args,stdout=subprocess.PIPE)
+    # proc2 = subprocess.Popen(["grep", "x12"], stdin=proc1.stdout, stdout=subprocess.PIPE)
+    out,err = proc.communicate()
+
+    result = out.decode("utf-8")
+    return result
 
 def demand_constraint(demands):
 
@@ -67,7 +82,7 @@ def source_trans_links():
                 part = src + trn + dst
                 eqn.append(part)
                 link_variables.add('y{}'.format(src + trn))
-            string = '  x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
+            string = '  x{} + x{} + x{} + x{} - y{} <= 0'.format(eqn[0], eqn[1], \
                                                       eqn[2], eqn[3], src + trn)
             links.append(string)
 
@@ -86,7 +101,7 @@ def trans_dest_links():
                 part = src + trn + dst
                 eqn.append(part)
                 link_variables.add('y{}'.format(trn + dst))
-            string = '  x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
+            string = '  x{} + x{} + x{} + x{} - y{} <= 0'.format(eqn[0], eqn[1], \
                                                       eqn[2], eqn[3], trn + dst)
             links.append(string)
 
@@ -103,7 +118,7 @@ def restrictions(capacity):
     for variable in sorted(link_variables):
         eqn = '  {} <= {}'.format(variable, capacity)
         restrictions.append(eqn)
-        eqn = '  {} <= {}r'.format(variable, capacity)
+        eqn = '  {}/{} <= r'.format(variable, capacity)
         utilazation_restrictions.append(eqn)
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
@@ -138,6 +153,7 @@ def main():
     part_3 = trans_dest_links()
     part_4 = restrictions(LINK_CAPACITY)
     build_cplex(part_1, part_2, part_3, part_4)
+    print(run_cplex(filename))
     # print("demand variables:\n{}\nlink variables:\n{}".format(sorted(demand_variables),\
                                                                 # sorted(link_variables)))
     # print(sorted(variables))
