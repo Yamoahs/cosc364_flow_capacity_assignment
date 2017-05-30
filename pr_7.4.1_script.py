@@ -17,8 +17,27 @@ def demand_vol_dic_creater(demand_volume):
 
     return demands
 
-def run_cplex(demands, src_links, trn_links, restrictions):
+def build_cplex(demands, src_links, trn_links, restrictions):
+    """"Function builds a Cplex .lp file based on string inputs"""
+    filename = 'pr_7.4.1.lp'
+    lp_string = \
+"""Minimize
+r
+Subject to
+{}
+{}
+{}
+{}
+  r >= 0
+""".format(demands, src_links, trn_links, restrictions)
+    f = open(filename, 'w')
+    f.write(lp_string)
+    f.close()
+    
+
+def run_cplex(filename):
     """"Script for building and running Cplex based on .lp file input"""
+    pass
 
 def demand_constraint(demands):
 
@@ -30,7 +49,7 @@ def demand_constraint(demands):
                 part = src + trn + dst
                 eqn.append(part)
                 demand_variables.add("x{}".format(part))
-            string = 'x{} + x{} + x{} = {}'.format(eqn[0], eqn[1], eqn[2], demands[str(src + dst)])
+            string = '  x{} + x{} + x{} = {}'.format(eqn[0], eqn[1], eqn[2], demands[str(src + dst)])
             demand_flows.append(string)
 
     demand_constraint_string = '\n'.join(demand_flows)
@@ -48,7 +67,7 @@ def source_trans_links():
                 part = src + trn + dst
                 eqn.append(part)
                 link_variables.add('y{}'.format(src + trn))
-            string = 'x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
+            string = '  x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
                                                       eqn[2], eqn[3], src + trn)
             links.append(string)
 
@@ -67,7 +86,7 @@ def trans_dest_links():
                 part = src + trn + dst
                 eqn.append(part)
                 link_variables.add('y{}'.format(trn + dst))
-            string = 'x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
+            string = '  x{} + x{} + x{} + x{} = y{}'.format(eqn[0], eqn[1], \
                                                       eqn[2], eqn[3], trn + dst)
             links.append(string)
 
@@ -82,16 +101,16 @@ def restrictions(capacity):
     # demand_restrictions = []
     #Link Capacity
     for variable in sorted(link_variables):
-        eqn = '{} <= {}'.format(variable, capacity)
+        eqn = '  {} <= {}'.format(variable, capacity)
         restrictions.append(eqn)
-        eqn = '{} <= {}r'.format(variable, capacity)
+        eqn = '  {} <= {}r'.format(variable, capacity)
         utilazation_restrictions.append(eqn)
-        eqn = '{} >= 0'.format(variable)
+        eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
 
     #demand restrictions
     for variable in sorted(demand_variables):
-        eqn = '{} >= 0'.format(variable)
+        eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
 
 
@@ -118,7 +137,7 @@ def main():
     part_2 = source_trans_links()
     part_3 = trans_dest_links()
     part_4 = restrictions(LINK_CAPACITY)
-    run_cplex(part_1, part_2, part_3, part_4)
+    build_cplex(part_1, part_2, part_3, part_4)
     # print("demand variables:\n{}\nlink variables:\n{}".format(sorted(demand_variables),\
                                                                 # sorted(link_variables)))
     # print(sorted(variables))
