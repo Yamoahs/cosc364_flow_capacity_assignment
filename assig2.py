@@ -12,6 +12,12 @@ demand_variables = set()
 link_variables = set()
 #/END OF GLOBAL VARIABLES
 ################################################################################
+# LP Variables:
+# a = Demand Volume
+# c = Capacity on a link between source and transit
+# d = Capacity on a link between transit and destination
+#/END OF LP VARIABLES
+################################################################################
 
 def set_nodes():
     """Take the user input of the number of Sources, Transits and Destinations
@@ -42,7 +48,7 @@ def demand_vol_dic_creater(start, dest):
     variables = itertools.product(start, dest)
     variables = list(map(''.join,list(variables)))
     demands = dict()
-    #A variable will represent the demand Volume
+    #a variable will represent the demand Volume
     for item in variables:
         demands[item] = 'a{}'.format(item)
 
@@ -76,25 +82,80 @@ def source_trans_links(start, tran, dest):
                 part = src + trn + dst
                 eqn.append(part)
                 link_variables.add('y{}'.format(src + trn))
-
-            string = '  ' + ' + '.join(eqn) + " = 0"
-            print(string)
-            # string = '  x{} + x{} + x{} + x{} - y{} = 0'.format(eqn[0], eqn[1], \
-            #                                           eqn[2], eqn[3], src + trn)
+            string = '  x' + ' + x'.join(eqn) + " - y{} = 0".format(src + trn)
             links.append(string)
 
     links_string = '\n'.join(links)
     return links_string
 
+def trans_dest_links(start, tran, dest):
+    """Function Generates the equations for the link demand constraints between
+    transit and destination nodes.
+    The len of the equation will be the number of Sources"""
+    links = []
+    for trn in tran:
+        for dst in dest:
+            eqn = []
+            for src in start:
+                part = src + trn + dst
+                eqn.append(part)
+                link_variables.add('y{}'.format(trn + dst))
+            string = '  x' + ' + x'.join(eqn) + " - y{} = 0".format(trn+ dst)
+            links.append(string)
+
+    links_string = '\n'.join(links)
+    return links_string
+
+def restrictions(capacity):
+    """Fuction generates the variable restrictions for the .lp file"""
+    restrictions = []
+    utilazation_restrictions = []
+    minimum_bound = []
+    # demand_restrictions = []
+    #Link Capacity
+    for variable in sorted(link_variables):
+        eqn = '  {} <= {}'.format(variable, capacity)
+        restrictions.append(eqn)
+        # eqn = '  {}/{} <= r'.format(variable, capacity)
+        # utilazation_restrictions.append(eqn)
+        eqn = '  {} >= 0'.format(variable)
+        minimum_bound.append(eqn)
+
+    #demand restrictions
+    for variable in sorted(demand_variables):
+        eqn = '  {} >= 0'.format(variable)
+        minimum_bound.append(eqn)
+
+    #r values
+    all_variables = sorted(link_variables.union(demand_variables))
+    # print(all_variables)
+    yyy = []
+    for trn in TRAN:
+        xxx = []
+        for var in all_variables:
+            if trn in var:
+                xxx.append(var)
+            eqn = '  ' + ' + '.join(xxx) + " - {}r <= 0".format(capacity)
+        # print(eqn)
+        utilazation_restrictions.append(eqn)
 
 
+
+    link_capacity_string = '\n'.join(restrictions)
+    utilazation_string = '\n'.join(utilazation_restrictions)
+    minimum_bound_string = '\n'.join(minimum_bound)
+    all_restrictions = link_capacity_string + '\n' + utilazation_string
+    return all_restrictions, minimum_bound_string
 
 def main():
     start, tran, dest = set_nodes()
     demand_dict = demand_vol_dic_creater(start, dest)
     part_1 = demand_constraint(start, tran, dest, demand_dict)
+    part_2 = source_trans_links(start, tran, dest)
+    part_3 = trans_dest_links(start, tran, dest)
     print(part_1)
-    # source_trans_links(start, tran, dest, demand_dict)
+    print(part_2)
+    print(part_3)
 
 
 if __name__ == '__main__':
