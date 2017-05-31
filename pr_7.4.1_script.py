@@ -29,8 +29,10 @@ Subject to
 {}
 {}
 {}
+Bounds
+{}
   r >= 0
-End""".format(demands, src_links, trn_links, restrictions)
+End""".format(demands, src_links, trn_links, restrictions[0], restrictions[1])
     f = open(filename, 'w')
     f.write(lp_string)
     f.close()
@@ -47,14 +49,14 @@ def run_cplex(filename):
         'display solution variables -'
     ]
 
-    # Home machine
-    command = "/home/samuel/C_plex/cplex/bin/x86-64_linux/cplex"
-    args = [
-        "-c",
-        "read /home/samuel/cosc364/cosc364_flow_capacity_assignment/" + filename,
-        "optimize",
-        'display solution variables -'
-    ]
+    # # Home machine
+    # command = "/home/samuel/C_plex/cplex/bin/x86-64_linux/cplex"
+    # args = [
+    #     "-c",
+    #     "read /home/samuel/cosc364/cosc364_flow_capacity_assignment/" + filename,
+    #     "optimize",
+    #     'display solution variables -'
+    # ]
 
     proc = subprocess.Popen([command] + args,stdout=subprocess.PIPE)
     # proc2 = subprocess.Popen(["grep", "x12"], stdin=proc1.stdout, stdout=subprocess.PIPE)
@@ -91,7 +93,7 @@ def source_trans_links():
                 part = src + trn + dst
                 eqn.append(part)
                 link_variables.add('y{}'.format(src + trn))
-            string = '  x{} + x{} + x{} + x{} - y{} <= 0'.format(eqn[0], eqn[1], \
+            string = '  x{} + x{} + x{} + x{} - y{} = 0'.format(eqn[0], eqn[1], \
                                                       eqn[2], eqn[3], src + trn)
             links.append(string)
 
@@ -155,9 +157,8 @@ def restrictions(capacity):
     link_capacity_string = '\n'.join(restrictions)
     utilazation_string = '\n'.join(utilazation_restrictions)
     minimum_bound_string = '\n'.join(minimum_bound)
-    all_restrictions = link_capacity_string + '\n' + utilazation_string + \
-                                                     '\n' + minimum_bound_string
-    return all_restrictions
+    all_restrictions = link_capacity_string + '\n' + utilazation_string
+    return all_restrictions, minimum_bound_string
 
 
 def main():
