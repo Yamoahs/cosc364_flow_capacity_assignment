@@ -7,7 +7,7 @@
 import subprocess
 import itertools
 ################################################################################
-GLOBAL VARIABLES:
+# GLOBAL VARIABLES:
 demand_variables = set()
 link_variables = set()
 #/END OF GLOBAL VARIABLES
@@ -48,6 +48,22 @@ def demand_vol_dic_creater(start, dest):
 
     return demands
 
+def demand_constraint(start, tran, dest, demand_dict):
+    demand_flows = []
+    for src in start:
+        for dst in dest:
+            eqn = []
+            for trn in tran:
+                part = src + trn + dst
+                eqn.append(part)
+                demand_variables.add("x{}".format(part))
+            string = '  x' + ' + x'.join(eqn) + " = {}".format(demand_dict[str(src + dst)])
+            # string = '  x{} + x{} + x{} = {}'.format(eqn[0], eqn[1], eqn[2], demand_dict[str(src + dst)])
+            demand_flows.append(string)
+
+    demand_constraint_string = '\n'.join(demand_flows)
+    return demand_constraint_string
+
 def source_trans_links(start, tran, dest):
     """Function Generates the equations for the link demand constraints between
     source and transit nodes.
@@ -60,8 +76,11 @@ def source_trans_links(start, tran, dest):
                 part = src + trn + dst
                 eqn.append(part)
                 link_variables.add('y{}'.format(src + trn))
-            string = '  x{} + x{} + x{} + x{} - y{} = 0'.format(eqn[0], eqn[1], \
-                                                      eqn[2], eqn[3], src + trn)
+
+            string = '  ' + ' + '.join(eqn) + " = 0"
+            print(string)
+            # string = '  x{} + x{} + x{} + x{} - y{} = 0'.format(eqn[0], eqn[1], \
+            #                                           eqn[2], eqn[3], src + trn)
             links.append(string)
 
     links_string = '\n'.join(links)
@@ -72,8 +91,10 @@ def source_trans_links(start, tran, dest):
 
 def main():
     start, tran, dest = set_nodes()
-    demands = demand_vol_dic_creater(start, dest)
-    print(demands)
+    demand_dict = demand_vol_dic_creater(start, dest)
+    part_1 = demand_constraint(start, tran, dest, demand_dict)
+    print(part_1)
+    # source_trans_links(start, tran, dest, demand_dict)
 
 
 if __name__ == '__main__':
