@@ -65,9 +65,9 @@ Subject to
   yZ2 <= 100
   yZ3 <= 100
   yZ4 <= 100
-xAX1 + xAX2 + xAX3 + xAX4 + xBX1 + xBX2 + xBX3 + xBX4 + xCX1 + xCX2 + xCX3 + xCX4 + xDX1 + xDX2 + xDX3 + xDX4 + yAX + yBX + yCX + yDX + yX1 + yX2 + yX3 + yX4 - 100r <= 0
-xAY1 + xAY2 + xAY3 + xAY4 + xBY1 + xBY2 + xBY3 + xBY4 + xCY1 + xCY2 + xCY3 + xCY4 + xDY1 + xDY2 + xDY3 + xDY4 + yAY + yBY + yCY + yDY + yY1 + yY2 + yY3 + yY4 - 100r <= 0
-xAZ1 + xAZ2 + xAZ3 + xAZ4 + xBZ1 + xBZ2 + xBZ3 + xBZ4 + xCZ1 + xCZ2 + xCZ3 + xCZ4 + xDZ1 + xDZ2 + xDZ3 + xDZ4 + yAZ + yBZ + yCZ + yDZ + yZ1 + yZ2 + yZ3 + yZ4 - 100r <= 0
+  xAX1 + xAX2 + xAX3 + xAX4 + xBX1 + xBX2 + xBX3 + xBX4 + xCX1 + xCX2 + xCX3 + xCX4 + xDX1 + xDX2 + xDX3 + xDX4 + yAX + yBX + yCX + yDX + yX1 + yX2 + yX3 + yX4 - 100r <= 0
+  xAY1 + xAY2 + xAY3 + xAY4 + xBY1 + xBY2 + xBY3 + xBY4 + xCY1 + xCY2 + xCY3 + xCY4 + xDY1 + xDY2 + xDY3 + xDY4 + yAY + yBY + yCY + yDY + yY1 + yY2 + yY3 + yY4 - 100r <= 0
+  xAZ1 + xAZ2 + xAZ3 + xAZ4 + xBZ1 + xBZ2 + xBZ3 + xBZ4 + xCZ1 + xCZ2 + xCZ3 + xCZ4 + xDZ1 + xDZ2 + xDZ3 + xDZ4 + yAZ + yBZ + yCZ + yDZ + yZ1 + yZ2 + yZ3 + yZ4 - 100r <= 0
   yAX >= 0
   yAY >= 0
   yAZ >= 0
