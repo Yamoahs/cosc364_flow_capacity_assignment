@@ -1,0 +1,147 @@
+Minimize
+r
+Subject to
+  xS1T1D1 + xS1T2D1 = 2
+  xS1T1D2 + xS1T2D2 = 3
+  xS1T1D3 + xS1T2D3 = 4
+  xS1T1D4 + xS1T2D4 = 5
+  xS2T1D1 + xS2T2D1 = 3
+  xS2T1D2 + xS2T2D2 = 4
+  xS2T1D3 + xS2T2D3 = 5
+  xS2T1D4 + xS2T2D4 = 6
+  xS3T1D1 + xS3T2D1 = 4
+  xS3T1D2 + xS3T2D2 = 5
+  xS3T1D3 + xS3T2D3 = 6
+  xS3T1D4 + xS3T2D4 = 7
+  xS1T1D1 + xS1T1D2 + xS1T1D3 + xS1T1D4 - yS1T1 = 0
+  xS1T2D1 + xS1T2D2 + xS1T2D3 + xS1T2D4 - yS1T2 = 0
+  xS2T1D1 + xS2T1D2 + xS2T1D3 + xS2T1D4 - yS2T1 = 0
+  xS2T2D1 + xS2T2D2 + xS2T2D3 + xS2T2D4 - yS2T2 = 0
+  xS3T1D1 + xS3T1D2 + xS3T1D3 + xS3T1D4 - yS3T1 = 0
+  xS3T2D1 + xS3T2D2 + xS3T2D3 + xS3T2D4 - yS3T2 = 0
+  xS1T1D1 + xS2T1D1 + xS3T1D1 - yT1D1 = 0
+  xS1T1D2 + xS2T1D2 + xS3T1D2 - yT1D2 = 0
+  xS1T1D3 + xS2T1D3 + xS3T1D3 - yT1D3 = 0
+  xS1T1D4 + xS2T1D4 + xS3T1D4 - yT1D4 = 0
+  xS1T2D1 + xS2T2D1 + xS3T2D1 - yT2D1 = 0
+  xS1T2D2 + xS2T2D2 + xS3T2D2 - yT2D2 = 0
+  xS1T2D3 + xS2T2D3 + xS3T2D3 - yT2D3 = 0
+  xS1T2D4 + xS2T2D4 + xS3T2D4 - yT2D4 = 0
+  yS1T1 - cS1T1 = 0
+  yS1T2 - cS1T2 = 0
+  yS2T1 - cS2T1 = 0
+  yS2T2 - cS2T2 = 0
+  yS3T1 - cS3T1 = 0
+  yS3T2 - cS3T2 = 0
+  yT1D1 - dT1D1 = 0
+  yT1D2 - dT1D2 = 0
+  yT1D3 - dT1D3 = 0
+  yT1D4 - dT1D4 = 0
+  yT2D1 - dT2D1 = 0
+  yT2D2 - dT2D2 = 0
+  yT2D3 - dT2D3 = 0
+  yT2D4 - dT2D4 = 0
+  xS1T1D1 + xS1T1D2 + xS1T1D3 + xS1T1D4 + xS2T1D1 + xS2T1D2 + xS2T1D3 + xS2T1D4 + xS3T1D1 + xS3T1D2 + xS3T1D3 + xS3T1D4 + yS1T1 + yS2T1 + yS3T1 + yT1D1 + yT1D2 + yT1D3 + yT1D4 - r <= 0
+  xS1T2D1 + xS1T2D2 + xS1T2D3 + xS1T2D4 + xS2T2D1 + xS2T2D2 + xS2T2D3 + xS2T2D4 + xS3T2D1 + xS3T2D2 + xS3T2D3 + xS3T2D4 + yS1T2 + yS2T2 + yS3T2 + yT2D1 + yT2D2 + yT2D3 + yT2D4 - r <= 0
+  uS1T1D1 + uS1T2D1 = 3
+  uS1T1D2 + uS1T2D2 = 3
+  uS1T1D3 + uS1T2D3 = 3
+  uS1T1D4 + uS1T2D4 = 3
+  uS2T1D1 + uS2T2D1 = 3
+  uS2T1D2 + uS2T2D2 = 3
+  uS2T1D3 + uS2T2D3 = 3
+  uS2T1D4 + uS2T2D4 = 3
+  uS3T1D1 + uS3T2D1 = 3
+  uS3T1D2 + uS3T2D2 = 3
+  uS3T1D3 + uS3T2D3 = 3
+  uS3T1D4 + uS3T2D4 = 3
+  3 xS1T1D1 - 2 uS1T1D1 = 0
+  3 xS1T1D2 - 3 uS1T1D2 = 0
+  3 xS1T1D3 - 4 uS1T1D3 = 0
+  3 xS1T1D4 - 5 uS1T1D4 = 0
+  3 xS1T2D1 - 2 uS1T2D1 = 0
+  3 xS1T2D2 - 3 uS1T2D2 = 0
+  3 xS1T2D3 - 4 uS1T2D3 = 0
+  3 xS1T2D4 - 5 uS1T2D4 = 0
+  3 xS2T1D1 - 3 uS2T1D1 = 0
+  3 xS2T1D2 - 4 uS2T1D2 = 0
+  3 xS2T1D3 - 5 uS2T1D3 = 0
+  3 xS2T1D4 - 6 uS2T1D4 = 0
+  3 xS2T2D1 - 3 uS2T2D1 = 0
+  3 xS2T2D2 - 4 uS2T2D2 = 0
+  3 xS2T2D3 - 5 uS2T2D3 = 0
+  3 xS2T2D4 - 6 uS2T2D4 = 0
+  3 xS3T1D1 - 4 uS3T1D1 = 0
+  3 xS3T1D2 - 5 uS3T1D2 = 0
+  3 xS3T1D3 - 6 uS3T1D3 = 0
+  3 xS3T1D4 - 7 uS3T1D4 = 0
+  3 xS3T2D1 - 4 uS3T2D1 = 0
+  3 xS3T2D2 - 5 uS3T2D2 = 0
+  3 xS3T2D3 - 6 uS3T2D3 = 0
+  3 xS3T2D4 - 7 uS3T2D4 = 0
+Bounds
+  yS1T1 >= 0
+  yS1T2 >= 0
+  yS2T1 >= 0
+  yS2T2 >= 0
+  yS3T1 >= 0
+  yS3T2 >= 0
+  yT1D1 >= 0
+  yT1D2 >= 0
+  yT1D3 >= 0
+  yT1D4 >= 0
+  yT2D1 >= 0
+  yT2D2 >= 0
+  yT2D3 >= 0
+  yT2D4 >= 0
+  xS1T1D1 >= 0
+  xS1T1D2 >= 0
+  xS1T1D3 >= 0
+  xS1T1D4 >= 0
+  xS1T2D1 >= 0
+  xS1T2D2 >= 0
+  xS1T2D3 >= 0
+  xS1T2D4 >= 0
+  xS2T1D1 >= 0
+  xS2T1D2 >= 0
+  xS2T1D3 >= 0
+  xS2T1D4 >= 0
+  xS2T2D1 >= 0
+  xS2T2D2 >= 0
+  xS2T2D3 >= 0
+  xS2T2D4 >= 0
+  xS3T1D1 >= 0
+  xS3T1D2 >= 0
+  xS3T1D3 >= 0
+  xS3T1D4 >= 0
+  xS3T2D1 >= 0
+  xS3T2D2 >= 0
+  xS3T2D3 >= 0
+  xS3T2D4 >= 0
+  r >= 0
+Binary
+  uS1T1D1
+  uS1T2D1
+  uS1T1D2
+  uS1T2D2
+  uS1T1D3
+  uS1T2D3
+  uS1T1D4
+  uS1T2D4
+  uS2T1D1
+  uS2T2D1
+  uS2T1D2
+  uS2T2D2
+  uS2T1D3
+  uS2T2D3
+  uS2T1D4
+  uS2T2D4
+  uS3T1D1
+  uS3T2D1
+  uS3T1D2
+  uS3T2D2
+  uS3T1D3
+  uS3T2D3
+  uS3T1D4
+  uS3T2D4
+End
