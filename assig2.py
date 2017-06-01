@@ -6,6 +6,7 @@
 ################################################################################
 import subprocess
 import itertools
+import time
 ################################################################################
 # GLOBAL VARIABLES:
 demand_variables = set()
@@ -236,7 +237,10 @@ def main():
     part_4 = restrictions(tran)
     part_5 = binaries(start, tran, dest, demand_dict)
     build_cplex(part_1, part_2, part_3, part_4, part_5)
+    start_time = time.time()
     print(run_cplex(filename))
+    end_time = time.time()
+    print("Run time: {}".format(end_time - start_time))
     # print(part_1)
     # print(part_2)
     # print(part_3)
