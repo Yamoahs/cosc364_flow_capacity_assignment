@@ -115,14 +115,16 @@ def restrictions(tran):
     # demand_restrictions = []
     #source_link_variables
     for variable in sorted(source_link_variables):
-        eqn = '  {} <= c{}'.format(variable, variable[1:])
+        # eqn = '  {} <= c{}'.format(variable, variable[1:])
+        eqn = '  {} - c{} = 0'.format(variable, variable[1:])
         restrictions.append(eqn)
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
 
     #transit_link_variables
     for variable in sorted(transit_link_variables):
-        eqn = '  {} <= d{}'.format(variable, variable[1:])
+        # eqn = '  {} <= d{}'.format(variable, variable[1:])
+        eqn = '  {} - d{} = 0'.format(variable, variable[1:])
         restrictions.append(eqn)
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
@@ -198,6 +200,33 @@ End""".format(demands, src_links, trn_links, restrictions[0], binaries[0], binar
     f.write(lp_string)
     f.close()
 
+def run_cplex(filename):
+    """"Script for building and running Cplex based on .lp file input"""
+    # Lab machines (comment out either these set or the other)
+    command = "/home/cosc/student/sya57/internet_tech_cosc364/labs/cplex/cplex/bin/x86-64_linux/cplex"
+    args = [
+        "-c",
+        "read /home/cosc/student/sya57/internet_tech_cosc364/assig_2/" + filename,
+        "optimize",
+        'display solution variables -'
+    ]
+
+    # # Home machine
+    # command = "/home/samuel/C_plex/cplex/bin/x86-64_linux/cplex"
+    # args = [
+    #     "-c",
+    #     "read /home/samuel/cosc364/cosc364_flow_capacity_assignment/" + filename,
+    #     "optimize",
+    #     'display solution variables -'
+    # ]
+
+    proc = subprocess.Popen([command] + args,stdout=subprocess.PIPE)
+    # proc2 = subprocess.Popen(["grep", "x12"], stdin=proc1.stdout, stdout=subprocess.PIPE)
+    out,err = proc.communicate()
+
+    result = out.decode("utf-8")
+    return result
+
 def main():
     start, tran, dest = set_nodes()
     demand_dict = demand_vol_dic_creater(start, dest)
@@ -207,6 +236,7 @@ def main():
     part_4 = restrictions(tran)
     part_5 = binaries(start, tran, dest, demand_dict)
     build_cplex(part_1, part_2, part_3, part_4, part_5)
+    print(run_cplex(filename))
     # print(part_1)
     # print(part_2)
     # print(part_3)
