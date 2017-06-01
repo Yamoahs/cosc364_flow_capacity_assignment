@@ -13,7 +13,6 @@ link_variables = set()
 #/END OF GLOBAL VARIABLES
 ################################################################################
 # LP Variables:
-# a = Demand Volume
 # c = Capacity on a link between source and transit
 # d = Capacity on a link between transit and destination
 #/END OF LP VARIABLES
@@ -48,9 +47,8 @@ def demand_vol_dic_creater(start, dest):
     variables = itertools.product(start, dest)
     variables = list(map(''.join,list(variables)))
     demands = dict()
-    #a variable will represent the demand Volume
-    for item in variables:
-        demands[item] = 'a{}'.format(item)
+    for item in sorted(variables):
+        demands[item] = '{}'.format(int(item[1]) + int(item[3]))
 
     return demands
 
@@ -156,6 +154,11 @@ def main():
     print(part_1)
     print(part_2)
     print(part_3)
+    # print(demand_dict)
+    # print(sorted(link_variables))
+    # print(start, dest)
+    # for i in start:
+    #     print(int(i[1]))
 
 
 if __name__ == '__main__':
