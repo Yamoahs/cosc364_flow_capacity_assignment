@@ -160,7 +160,7 @@ def binaries(start, tran, dest, demand_dict):
             for trn in tran:
                 part = src + trn + dst
                 eqn.append(part)
-                binary_variables.append('u' + part)
+                binary_variables.append('  u' + part)
             string = '  u' + ' + u'.join(eqn) + " = 3" #3 set by assignmet spec
             binaries_path.append(string)
     #formualation whether a path is used to transport demand Volume
@@ -168,7 +168,7 @@ def binaries(start, tran, dest, demand_dict):
 
     for var in sorted(demand_variables):
         key = var[1:3] + var[5:7]
-        string = '  3 {} - u{} {} = 0'.format(var, var[1:], demand_dict[key])
+        string = '  3 {} - {} u{} = 0'.format(var, demand_dict[key], var[1:])
         binary_true.append(string)
 
     binaries_path_string = '\n'.join(binaries_path)
@@ -176,7 +176,7 @@ def binaries(start, tran, dest, demand_dict):
     binary_variables_string = '\n'.join(binary_variables)
     return binaries_path_string, binary_true_string, binary_variables_string
 
-def build_cplex(demands, src_links, trn_links, restrictions):
+def build_cplex(demands, src_links, trn_links, restrictions, binaries):
     """"Function builds a Cplex .lp file based on string inputs"""
     lp_string = \
 """Minimize
@@ -186,10 +186,14 @@ Subject to
 {}
 {}
 {}
+{}
+{}
 Bounds
 {}
   r >= 0
-End""".format(demands, src_links, trn_links, restrictions[0], restrictions[1])
+Binary
+{}
+End""".format(demands, src_links, trn_links, restrictions[0], binaries[0], binaries[1], restrictions[1], binaries[2])
     f = open(filename, 'w')
     f.write(lp_string)
     f.close()
@@ -202,15 +206,15 @@ def main():
     part_3 = trans_dest_links(start, tran, dest)
     part_4 = restrictions(tran)
     part_5 = binaries(start, tran, dest, demand_dict)
-    build_cplex(part_1, part_2, part_3, part_4)
-    print(part_1)
-    print(part_2)
-    print(part_3)
-    print(part_4[0])
-    print(part_4[1])
-    print(part_5[0])
-    print(part_5[1])
-    print(part_5[2])
+    build_cplex(part_1, part_2, part_3, part_4, part_5)
+    # print(part_1)
+    # print(part_2)
+    # print(part_3)
+    # print(part_4[0])
+    # print(part_4[1])
+    # print(part_5[0])
+    # print(part_5[1])
+    # print(part_5[2])
     # print(sorted(source_link_variables))
     # print(sorted(transit_link_variables))
     # print(sorted(demand_variables))
