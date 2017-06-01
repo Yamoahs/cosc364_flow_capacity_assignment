@@ -9,7 +9,9 @@ import itertools
 ################################################################################
 # GLOBAL VARIABLES:
 demand_variables = set()
-link_variables = set()
+source_link_variables = set()
+transit_link_variables = set()
+filename = 'assig.lp'
 #/END OF GLOBAL VARIABLES
 ################################################################################
 # LP Variables:
@@ -79,7 +81,7 @@ def source_trans_links(start, tran, dest):
             for dst in dest:
                 part = src + trn + dst
                 eqn.append(part)
-                link_variables.add('y{}'.format(src + trn))
+                source_link_variables.add('y{}'.format(src + trn))
             string = '  x' + ' + x'.join(eqn) + " - y{} = 0".format(src + trn)
             links.append(string)
 
@@ -97,47 +99,49 @@ def trans_dest_links(start, tran, dest):
             for src in start:
                 part = src + trn + dst
                 eqn.append(part)
-                link_variables.add('y{}'.format(trn + dst))
+                transit_link_variables.add('y{}'.format(trn + dst))
             string = '  x' + ' + x'.join(eqn) + " - y{} = 0".format(trn+ dst)
             links.append(string)
 
     links_string = '\n'.join(links)
     return links_string
 
-def restrictions(capacity):
+def restrictions(tran):
     """Fuction generates the variable restrictions for the .lp file"""
     restrictions = []
     utilazation_restrictions = []
     minimum_bound = []
     # demand_restrictions = []
-    #Link Capacity
-    for variable in sorted(link_variables):
-        eqn = '  {} <= {}'.format(variable, capacity)
+    #source_link_variables
+    for variable in sorted(source_link_variables):
+        eqn = '  {} <= c{}'.format(variable, variable[1:])
         restrictions.append(eqn)
-        # eqn = '  {}/{} <= r'.format(variable, capacity)
-        # utilazation_restrictions.append(eqn)
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
 
-    #demand restrictions
+    #transit_link_variables
+    for variable in sorted(transit_link_variables):
+        eqn = '  {} <= d{}'.format(variable, variable[1:])
+        restrictions.append(eqn)
+        eqn = '  {} >= 0'.format(variable)
+        minimum_bound.append(eqn)
+
+    #demand restrictions variables
     for variable in sorted(demand_variables):
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
 
-    #r values
-    all_variables = sorted(link_variables.union(demand_variables))
-    # print(all_variables)
+    # #r values
+    all_variables = sorted(source_link_variables.union(transit_link_variables.union(demand_variables)))
     yyy = []
-    for trn in TRAN:
+    for trn in tran:
         xxx = []
         for var in all_variables:
             if trn in var:
                 xxx.append(var)
-            eqn = '  ' + ' + '.join(xxx) + " - {}r <= 0".format(capacity)
+            eqn = '  ' + ' + '.join(xxx) + " - r <= 0"
         # print(eqn)
         utilazation_restrictions.append(eqn)
-
-
 
     link_capacity_string = '\n'.join(restrictions)
     utilazation_string = '\n'.join(utilazation_restrictions)
@@ -145,20 +149,41 @@ def restrictions(capacity):
     all_restrictions = link_capacity_string + '\n' + utilazation_string
     return all_restrictions, minimum_bound_string
 
+def build_cplex(demands, src_links, trn_links, restrictions):
+    """"Function builds a Cplex .lp file based on string inputs"""
+    lp_string = \
+"""Minimize
+r
+Subject to
+{}
+{}
+{}
+{}
+Bounds
+{}
+  r >= 0
+End""".format(demands, src_links, trn_links, restrictions[0], restrictions[1])
+    f = open(filename, 'w')
+    f.write(lp_string)
+    f.close()
+
 def main():
     start, tran, dest = set_nodes()
     demand_dict = demand_vol_dic_creater(start, dest)
     part_1 = demand_constraint(start, tran, dest, demand_dict)
     part_2 = source_trans_links(start, tran, dest)
     part_3 = trans_dest_links(start, tran, dest)
-    print(part_1)
-    print(part_2)
-    print(part_3)
-    # print(demand_dict)
+    part_4 = restrictions(tran)
+    build_cplex(part_1, part_2, part_3, part_4)
+    # print(part_1)
+    # print(part_2)
+    # print(part_3)
+    # print(sorted(source_link_variables))
+    # print(sorted(transit_link_variables))
+    # print(part_4[0])
+    # print(part_4[1])
+    # print(sorted(demand_variables))
     # print(sorted(link_variables))
-    # print(start, dest)
-    # for i in start:
-    #     print(int(i[1]))
 
 
 if __name__ == '__main__':
