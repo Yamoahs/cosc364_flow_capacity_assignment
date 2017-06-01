@@ -17,6 +17,7 @@ filename = 'assig.lp'
 # LP Variables:
 # c = Capacity on a link between source and transit
 # d = Capacity on a link between transit and destination
+# u = Binary Auxilary variables
 #/END OF LP VARIABLES
 ################################################################################
 
@@ -149,6 +150,32 @@ def restrictions(tran):
     all_restrictions = link_capacity_string + '\n' + utilazation_string
     return all_restrictions, minimum_bound_string
 
+def binaries(start, tran, dest, demand_dict):
+    #binary path equation formulation that will sum to total paths used (3)
+    binary_variables = []
+    binaries_path = []
+    for src in start:
+        for dst in dest:
+            eqn = []
+            for trn in tran:
+                part = src + trn + dst
+                eqn.append(part)
+                binary_variables.append('u' + part)
+            string = '  u' + ' + u'.join(eqn) + " = 3" #3 set by assignmet spec
+            binaries_path.append(string)
+    #formualation whether a path is used to transport demand Volume
+    binary_true = []
+
+    for var in sorted(demand_variables):
+        key = var[1:3] + var[5:7]
+        string = '  3 {} - u{} {} = 0'.format(var, var[1:], demand_dict[key])
+        binary_true.append(string)
+
+    binaries_path_string = '\n'.join(binaries_path)
+    binary_true_string = '\n'.join(binary_true)
+    binary_variables_string = '\n'.join(binary_variables)
+    return binaries_path_string, binary_true_string, binary_variables_string
+
 def build_cplex(demands, src_links, trn_links, restrictions):
     """"Function builds a Cplex .lp file based on string inputs"""
     lp_string = \
@@ -174,15 +201,20 @@ def main():
     part_2 = source_trans_links(start, tran, dest)
     part_3 = trans_dest_links(start, tran, dest)
     part_4 = restrictions(tran)
+    part_5 = binaries(start, tran, dest, demand_dict)
     build_cplex(part_1, part_2, part_3, part_4)
-    # print(part_1)
-    # print(part_2)
-    # print(part_3)
+    print(part_1)
+    print(part_2)
+    print(part_3)
+    print(part_4[0])
+    print(part_4[1])
+    print(part_5[0])
+    print(part_5[1])
+    print(part_5[2])
     # print(sorted(source_link_variables))
     # print(sorted(transit_link_variables))
-    # print(part_4[0])
-    # print(part_4[1])
     # print(sorted(demand_variables))
+    # print(demand_dict.items())
     # print(sorted(link_variables))
 
 
