@@ -20,6 +20,7 @@ filename = 'assig.lp'
 # d = Capacity on a link between transit and destination
 # x = path Flow
 # u = Binary Auxilary variables
+# l = Sum of the load on a transit nodes
 #/END OF LP VARIABLES
 ################################################################################
 
@@ -187,12 +188,27 @@ def binaries(start, tran, dest, demand_dict):
 
     return binaries_path_string, binary_true_string, binary_variables_string
 
-def build_cplex(demands, src_links, trn_links, restrictions, binaries):
+def calc_transit_load(tran):
+    """calculates the total load on each transit Node"""
+    transit_loads = []
+    for trn in tran:
+        xxx = []
+        for var in sorted(demand_variables):
+            if trn in var:
+                xxx.append(var)
+            eqn = '  ' + ' + '.join(xxx) + " - l{} = 0".format(trn)
+        transit_loads.append(eqn)
+    transit_loads_string = '\n'.join(transit_loads)
+
+    return transit_loads_string
+
+def build_cplex(demands, src_links, trn_links, restrictions, binaries, T_load):
     """"Function builds a Cplex .lp file based on string inputs"""
     lp_string = \
 """Minimize
 r
 Subject to
+{}
 {}
 {}
 {}
@@ -205,7 +221,7 @@ Bounds
 Binary
 {}
 End""".format(demands, src_links, trn_links, restrictions[0], binaries[0],\
-                                      binaries[1], restrictions[1], binaries[2])
+                              binaries[1], T_load, restrictions[1], binaries[2])
     f = open(filename, 'w')
     f.write(lp_string)
     f.close()
@@ -244,7 +260,8 @@ def main():
     part_3 = trans_dest_links(start, tran, dest)
     part_4 = restrictions(tran)
     part_5 = binaries(start, tran, dest, demand_dict)
-    build_cplex(part_1, part_2, part_3, part_4, part_5)
+    part_6 = calc_transit_load(tran)
+    build_cplex(part_1, part_2, part_3, part_4, part_5, part_6)
     start_time = time.time()
     print(run_cplex(filename))
     end_time = time.time()
