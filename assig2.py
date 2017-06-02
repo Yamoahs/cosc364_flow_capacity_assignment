@@ -140,8 +140,8 @@ def restrictions(tran):
         eqn = '  {} >= 0'.format(variable)
         minimum_bound.append(eqn)
 
-    # #r values
-    all_variables = sorted(source_link_variables.union(transit_link_variables.union(demand_variables)))
+    # r values
+    all_variables = sorted(source_link_variables)
     yyy = []
     for trn in tran:
         xxx = []
