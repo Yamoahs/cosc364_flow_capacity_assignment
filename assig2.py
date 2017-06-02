@@ -172,10 +172,10 @@ def binaries(start, tran, dest, demand_dict):
                 part = src + trn + dst
                 eqn.append(part)
                 binary_variables.append('  u' + part)
-            string = '  u' + ' + u'.join(eqn) + " = 3" #3 set by assignmet spec
+            string = '  u' + ' + u'.join(eqn) + " = 3" #3 set by assignment spec
             binaries_path.append(string)
 
-    #formualation whether a path is used to transport demand Volume
+    #formulation whether a path is used to transport demand Volume
     binary_true = []
     for var in sorted(demand_variables):
         key = var[1:3] + var[5:7]
